@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Un Libro para Papá</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .book-container {
+            perspective: 1500px;
+            width: 800px;
+            height: 600px;
+            position: relative;
+        }
+
+        .book {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s ease-in-out;
+        }
+
+        .page {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            background: #FFF8DC;
+            border: 2px solid #8B4513;
+            border-radius: 0 15px 15px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            text-align: center;
+            transform-origin: left center;
+            transition: transform 0.8s ease-in-out;
+            backface-visibility: hidden;
+        }
+
+        .page.left {
+            left: 0;
+            border-radius: 15px 0 0 15px;
+            transform-origin: right center;
+        }
+
+        .page.right {
+            right: 0;
+        }
+
+        .page.flipped {
+            transform: rotateY(-180deg);
+        }
+
+        .page h1 {
+            color: #8B4513;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .page h2 {
+            color: #CD853F;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .page p {
+            color: #5D4037;
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: #8B4513;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            background: #8B4513;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-family: 'Georgia', serif;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            background: #A0522D;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .cover {
+            background: linear-gradient(135deg, #8B4513, #CD853F);
+            color: white;
+            border: 3px solid #654321;
+        }
+
+        .dedication {
+            font-style: italic;
+            color: #8B4513;
+            margin-top: 20px;
+        }
+
+        .heart {
+            color: #DC143C;
+            font-size: 1.5em;
+            margin: 10px;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .book-spine {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(to bottom, #654321, #8B4513);
+            transform: translateX(-50%);
+            border-radius: 5px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 900px) {
+            .book-container {
+                width: 90vw;
+                height: 70vh;
+            }
+            
+            .page {
+                padding: 20px;
+            }
+            
+            .page h1 {
+                font-size: 2em;
+            }
+            
+            .page h2 {
+                font-size: 1.5em;
+            }
+            
+            .page p {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="book-container">
+        <div class="book-spine"></div>
+        <div class="book" id="book">
+            <!-- Portada -->
+            <div class="page right cover" id="page0">
+                <h1>Para el Mejor Papá</h1>
+                <div class="heart">♥</div>
+                <h2>Un Libro Especial</h2>
+                <p class="dedication">Con todo mi amor y cariño</p>
+                <div class="page-number">1</div>
+            </div>
+
+            <!-- Página 1 -->
+            <div class="page left" id="page1" style="display: none;">
+                <h2>Papi</h2>
+                <p>No es costumbre hacer este tipo de cosas pero las hago con todo mi cariño, quisiera desearte un feliz día.</p>
+                <p>Desde muy pequeño he querido ser como tú, has sido mi referente más grande en esta vida.</p>
+                <div class="page-number">2</div>
+            </div>
+
+            <!-- Página 2 -->
+            <div class="page right" id="page2" style="display: none;">
+                <h2>Mi Gratitud</h2>
+                <p>Quiero agradecerte por todos los momentos que hemos pasado juntos, han sido de mucha alegría y de mucho aprendizaje.</p>
+                <p>Gracias a ti estoy ahora donde estoy.</p>
+                <div class="page-number">3</div>
+            </div>
+
+            <!-- Página 3 -->
+            <div class="page left" id="page3" style="display: none;">
+                <h2>El Ejemplo que Eres</h2>
+                <p>Has formado a dos seres que son un ejemplo a seguir así como tú.</p>
+                <p>Tengo el privilegio de tenerte como papá y sentir que me has guiado y acompañado en todo este proceso.</p>
+                <div class="page-number">4</div>
+            </div>
+
+            <!-- Página 4 -->
+            <div class="page right" id="page4" style="display: none;">
+                <h2>Siempre Ahí</h2>
+                <p>Gracias por estar ahí para mí en todo este tiempo.</p>
+                <p>Espero tenerte por mil años más.</p>
+                <div class="heart">♥</div>
+                <div class="page-number">5</div>
+            </div>
+
+            <!-- Página Final -->
+            <div class="page left" id="page5" style="display: none;">
+                <h2>Feliz Día Papi</h2>
+                <div class="heart">♥</div>
+                <p style="font-size: 1.5em; color: #DC143C; font-weight: bold;">¡Feliz Día Papi!</p>
+                <div class="dedication">Con todo mi amor y cariño</div>
+                <div class="dedication">Sergio Jimenez❤</div>
+                <div class="page-number">6</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" id="prevBtn" onclick="previousPage()" disabled>← Anterior</button>
+            <button class="btn" id="nextBtn" onclick="nextPage()">Siguiente →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 0;
+        const totalPages = 5;
+
+        function showPage(pageNum) {
+            // Ocultar todas las páginas
+            for (let i = 0; i <= totalPages; i++) {
+                const page = document.getElementById(`page${i}`);
+                if (page) {
+                    page.style.display = 'none';
+                }
+            }
+
+            // Mostrar páginas actuales
+            if (pageNum === 0) {
+                // Solo portada
+                document.getElementById('page0').style.display = 'flex';
+            } else {
+                // Mostrar página izquierda y derecha
+                const leftPage = document.getElementById(`page${pageNum * 2 - 1}`);
+                const rightPage = document.getElementById(`page${pageNum * 2}`);
+                
+                if (leftPage) leftPage.style.display = 'flex';
+                if (rightPage) rightPage.style.display = 'flex';
+            }
+
+            // Actualizar botones
+            document.getElementById('prevBtn').disabled = pageNum === 0;
+            document.getElementById('nextBtn').disabled = pageNum === Math.ceil(totalPages / 2);
+        }
+
+        function nextPage() {
+            if (currentPage < Math.ceil(totalPages / 2)) {
+                currentPage++;
+                showPage(currentPage);
+                
+                // Efecto de página girando
+                const book = document.getElementById('book');
+                book.style.transform = `rotateY(${currentPage * -5}deg)`;
+            }
+        }
+
+        function previousPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                showPage(currentPage);
+                
+                // Efecto de página girando
+                const book = document.getElementById('book');
+                book.style.transform = `rotateY(${currentPage * -5}deg)`;
+            }
+        }
+
+        // Navegación con teclado
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextPage();
+            } else if (e.key === 'ArrowLeft') {
+                previousPage();
+            }
+        });
+
+        // Inicializar
+        showPage(0);
+    </script>
+</body>
+</html>
